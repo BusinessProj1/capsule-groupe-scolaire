@@ -1,0 +1,211 @@
+{% extends "accounts/dashboard_base.html" %}
+{% block title %}Tableau de bord{% endblock %}
+{% block extra_head %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+{% endblock %}
+
+{% block extra_css %}
+    .chart-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; }
+    .chart-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+    .chart-title { font-size: 0.95rem; font-weight: 700; color: var(--text-dark); }
+    .chart-container { position: relative; width: 100%; height: 200px; }
+    .donut-container { position: relative; width: 160px; height: 160px; margin: 0 auto; }
+    .donut-center-label { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; pointer-events: none; }
+    .donut-center-label .num { font-size: 1.6rem; font-weight: 800; color: var(--text-dark); line-height: 1; }
+    .donut-center-label .lbl { font-size: 0.7rem; color: var(--text-muted); font-weight: 600; }
+    .donut-legend { display: flex; flex-direction: column; gap: 8px; margin-top: 16px; }
+    .donut-legend-item { display: flex; align-items: center; gap: 8px; font-size: 0.82rem; color: var(--text-main); font-weight: 600; }
+    .donut-legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+    .charts-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 18px; margin-bottom: 24px; }
+    .bottom-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 18px; margin-bottom: 24px; }
+    .info-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; }
+    .info-card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+    .info-card-title { font-size: 0.95rem; font-weight: 700; color: var(--text-dark); }
+    .info-card-link { font-size: 0.78rem; font-weight: 600; color: var(--primary); text-decoration: none; }
+    .actions-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .action-btn { display: flex; align-items: center; gap: 8px; padding: 10px 14px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--card-bg); font-family: inherit; font-size: 0.82rem; font-weight: 600; color: var(--text-main); cursor: pointer; transition: var(--transition); text-decoration: none; }
+    .action-btn:hover { border-color: var(--primary); color: var(--primary); background: var(--primary-bg); }
+    .action-btn svg { width: 16px; height: 16px; }
+    @media (max-width: 1200px) { .charts-row, .bottom-grid { grid-template-columns: 1fr; } }
+{% endblock %}
+
+{% block content %}
+<!-- WELCOME -->
+<div class="page-header">
+    <div>
+        <h1>Bonjour, Professeur {{ user.first_name|default:user.username }} 👋</h1>
+        <p>Bienvenue sur votre espace d'administration.</p>
+    </div>
+</div>
+
+<!-- STATS -->
+<div class="stats-row">
+    <div class="stat-card">
+        <div><div class="stat-label">Élèves</div><div class="stat-value">{{ total_etudiants }}</div></div>
+        <div class="stat-icon gold"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div>
+    </div>
+    <div class="stat-card">
+        <div><div class="stat-label">Témoignages</div><div class="stat-value">{{ total_temoignages }}</div></div>
+        <div class="stat-icon blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+    </div>
+    <div class="stat-card">
+        <div><div class="stat-label">Messages reçus</div><div class="stat-value">{{ total_messages }}</div></div>
+        <div class="stat-icon green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div>
+    </div>
+    <div class="stat-card">
+        <div><div class="stat-label">Non lus</div><div class="stat-value">{{ messages_non_lus }}</div></div>
+        <div class="stat-icon orange"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></div>
+    </div>
+</div>
+
+<!-- CHARTS -->
+<div class="charts-row">
+    <div class="chart-card">
+        <div class="chart-header"><span class="chart-title">Répartition des élèves</span></div>
+        {% if total_etudiants > 0 %}
+        <div class="donut-container">
+            <canvas id="donutChart"></canvas>
+            <div class="donut-center-label"><div class="num">{{ total_etudiants }}</div><div class="lbl">Total</div></div>
+        </div>
+        <div class="donut-legend" style="align-items:center;">
+            <div class="donut-legend-item"><span class="donut-legend-dot" style="background:#D4AF37;"></span> Primaire</div>
+            <div class="donut-legend-item"><span class="donut-legend-dot" style="background:#333;"></span> Collège</div>
+            <div class="donut-legend-item"><span class="donut-legend-dot" style="background:#E5C158;"></span> Lycée</div>
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></svg>
+            <p>Aucun élève inscrit</p>
+        </div>
+        {% endif %}
+    </div>
+    <div class="chart-card">
+        <div class="chart-header"><span class="chart-title">Derniers messages</span></div>
+        {% if messages %}
+        <div class="chart-container"><canvas id="messagesChart"></canvas></div>
+        {% else %}
+        <div class="empty-state">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            <p>Aucun message reçu</p>
+        </div>
+        {% endif %}
+    </div>
+    <div class="chart-card">
+        <div class="chart-header"><span class="chart-title">Témoignages récents</span></div>
+        {% if temoignages %}
+        <div class="chart-container"><canvas id="temoignagesChart"></canvas></div>
+        {% else %}
+        <div class="empty-state">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+            <p>Aucun témoignage</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- BOTTOM GRID -->
+<div class="bottom-grid">
+    <div class="info-card">
+        <div class="info-card-header">
+            <span class="info-card-title">Messages de contact</span>
+            <a class="info-card-link" href="{% url 'dashboard_messages' %}">Voir tout</a>
+        </div>
+        {% if messages %}
+        <table class="data-table">
+            <thead><tr><th>Nom</th><th>Niveau</th><th>Date</th></tr></thead>
+            <tbody>
+                {% for msg in messages %}
+                <tr>
+                    <td style="font-weight:700;">{{ msg.nom }}</td>
+                    <td style="color:var(--text-muted);">{{ msg.niveau }}</td>
+                    <td style="color:var(--text-muted);font-size:0.8rem;">{{ msg.date_creation|date:"d/m/Y" }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <div class="empty-state">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            <p>Aucun message</p>
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="info-card">
+        <div class="info-card-header">
+            <span class="info-card-title">Étudiants inscrits</span>
+            <a class="info-card-link" href="{% url 'dashboard_eleves' %}">Voir tout</a>
+        </div>
+        {% if etudiants %}
+        <table class="data-table">
+            <thead><tr><th>Nom</th><th>Niveau</th><th>Tél</th></tr></thead>
+            <tbody>
+                {% for etudiant in etudiants %}
+                <tr>
+                    <td style="font-weight:700;">{{ etudiant.get_full_name|default:etudiant.username }}</td>
+                    <td style="color:var(--text-muted);">{{ etudiant.get_niveau_display|default:"—" }}</td>
+                    <td style="color:var(--text-muted);font-size:0.8rem;">{{ etudiant.telephone|default:"—" }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <div class="empty-state">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+            <p>Aucun étudiant</p>
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="info-card">
+        <div class="info-card-header"><span class="info-card-title">Actions rapides</span></div>
+        <div class="actions-grid">
+            <a href="{% url 'dashboard_eleves' %}" class="action-btn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
+                Gérer les élèves
+            </a>
+            <a href="{% url 'dashboard_cours' %}" class="action-btn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+                Gérer les cours
+            </a>
+            <a href="{% url 'dashboard_examens' %}" class="action-btn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                Gérer les examens
+            </a>
+            <a href="{% url 'dashboard_paiements' %}" class="action-btn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+                Gérer les paiements
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+const donutEl = document.getElementById('donutChart');
+if (donutEl) {
+    new Chart(donutEl.getContext('2d'), {
+        type: 'doughnut',
+        data: { labels: ['Primaire','Collège','Lycée'], datasets: [{ data: [{{ etudiants_primaire|default:0 }}, {{ etudiants_college|default:0 }}, {{ etudiants_lycee|default:0 }}], backgroundColor: ['#D4AF37','#333','#E5C158'], borderWidth: 0, cutout: '70%' }] },
+        options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { display: false } } }
+    });
+}
+const msgEl = document.getElementById('messagesChart');
+if (msgEl) {
+    new Chart(msgEl.getContext('2d'), {
+        type: 'bar',
+        data: { labels: [{% for msg in messages %}'{{ msg.date_creation|date:"d/m" }}'{% if not forloop.last %},{% endif %}{% endfor %}], datasets: [{ data: [{% for msg in messages %}1{% if not forloop.last %},{% endif %}{% endfor %}], backgroundColor: 'rgba(212,175,55,0.3)', borderRadius: 6, barThickness: 20 }] },
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { stepSize: 1, font: { size: 11 }, color: '#B3B3B3' }, grid: { color: 'rgba(0,0,0,0.04)' }, border: { display: false } }, x: { ticks: { font: { size: 10 }, color: '#8C8C8C' }, grid: { display: false }, border: { display: false } } } }
+    });
+}
+const temoEl = document.getElementById('temoignagesChart');
+if (temoEl) {
+    new Chart(temoEl.getContext('2d'), {
+        type: 'line',
+        data: { labels: [{% for t in temoignages %}'{{ t.date_creation|date:"d/m" }}'{% if not forloop.last %},{% endif %}{% endfor %}], datasets: [{ data: [{% for t in temoignages %}{{ forloop.counter }}{% if not forloop.last %},{% endif %}{% endfor %}], borderColor: '#D4AF37', backgroundColor: 'rgba(212,175,55,0.08)', fill: true, tension: 0.4, borderWidth: 2, pointRadius: 3, pointBackgroundColor: '#D4AF37' }] },
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { stepSize: 1, font: { size: 11 }, color: '#B3B3B3' }, grid: { color: 'rgba(0,0,0,0.04)' }, border: { display: false } }, x: { ticks: { font: { size: 10 }, color: '#8C8C8C' }, grid: { display: false }, border: { display: false } } } }
+    });
+}
+</script>
+{% endblock %}

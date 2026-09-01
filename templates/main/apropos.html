@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}À propos - Capsule Groupe Scolaire{% endblock %}
+{% block nav_apropos %}active{% endblock %}
+
+{% block content %}
+    <section class="section" id="apropos">
+        <div class="container">
+            <div class="grid-2" style="margin-bottom: 60px; align-items: center;">
+                <div class="reveal">
+                    <span class="kicker">Professeur Yassine El Maski</span>
+                    <h2>Une pédagogie d'<span class="gradient-text">excellence</span></h2>
+                    <p class="sec-sub">Découvrez le parcours et la vision de votre professeur de mathématiques, dédié à la réussite et à l'excellence académique de chaque élève.</p>
+                </div>
+                <div class="reveal" style="transition-delay: 0.2s;">
+                    <img src="{% static 'images/yassine.png' %}" alt="Professeur Yassine El Maski" class="hero-img">
+                </div>
+            </div>
+
+            <div class="grid-3" style="margin-top: 40px;">
+                <article class="card reveal">
+                    <div class="card-ico"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"></path><path d="M6 12v5c3 3 9 3 12 0v-5"></path></svg></div>
+                    <h3>Formation & Expertise</h3>
+                    <p>Issu d'un cursus scientifique d'excellence, le Professeur Yassine maîtrise parfaitement les subtilités et les exigences du programme marocain, du cycle primaire jusqu'aux classes de Sciences Mathématiques (SM).</p>
+                </article>
+                <article class="card reveal" style="transition-delay: 0.1s;">
+                    <div class="card-ico"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg></div>
+                    <h3>Une Pédagogie Active</h3>
+                    <p>Fini les cours magistraux passifs. La méthode d'enseignement repose sur l'interaction, le raisonnement logique et la résolution de problèmes concrets pour développer l'esprit analytique de l'élève.</p>
+                </article>
+                <article class="card reveal" style="transition-delay: 0.2s;">
+                    <div class="card-ico"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="7"></circle><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline></svg></div>
+                    <h3>Résultats & Engagement</h3>
+                    <p>Fort de plusieurs années d'expérience, il s'engage personnellement dans la réussite de ses élèves, avec des taux de réussite remarquables et des mentions très bien aux examens nationaux.</p>
+                </article>
+            </div>
+
+            <div class="card reveal" style="margin-top: 50px; background: rgba(212, 175, 55, 0.05); border: 1px solid rgba(212, 175, 55, 0.3);">
+                <h3 style="color: var(--primary); margin-bottom: 20px;">Le Mot du Professeur</h3>
+                <p style="font-style: italic; color: var(--text-main); font-size: 1.1rem; line-height: 1.8;">
+                    "Mon objectif premier n'est pas seulement de transmettre des formules mathématiques, mais d'apprendre à mes élèves à réfléchir, à structurer leur pensée et à surmonter leurs blocages. Les mathématiques ne sont pas une simple matière, c'est un outil puissant pour développer la logique et la persévérance. Je crois fermement que chaque élève, avec la bonne approche et un suivi rigoureux, peut exceller."
+                </p>
+                <div style="margin-top: 20px; font-weight: 700; color: var(--text-main);">— Professeur Yassine El Maski</div>
+            </div>
+
+            <div class="center reveal" style="margin-top: 60px;">
+                <h3 style="margin-bottom: 20px; color: var(--text-main);">Prêt à commencer l'aventure ?</h3>
+                <a href="https://wa.me/212613214968" target="_blank" class="btn btn-primary" style="padding: 16px 32px; font-size: 1.1rem;">Réserver votre premier cours sur WhatsApp</a>
+            </div>
+        </div>
+    </section>
+{% endblock %}

@@ -1,0 +1,38 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Django
+db.sqlite3
+db.sqlite3-journal
+media/
+
+# Environment
+.env
+*.env.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Temporary scripts (cleanup)
+add_*.py
+add_*.sh
+fix_*.py
+check_*.py
+create_*.py
+migrate_*.py
+remove_*.py
+run_*.py
+apply_*.sh
+
+# Byte-compiled
+*.pyc

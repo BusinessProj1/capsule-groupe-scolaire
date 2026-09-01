@@ -1,0 +1,136 @@
+{% extends "accounts/dashboard_etudiant_base.html" %}
+{% load static %}
+
+{% block title %}Mon Profil - Capsule Groupe Scolaire{% endblock %}
+
+{% block content %}
+<div style="position:relative;overflow:hidden;">
+    <!-- Background decoration -->
+    <div style="position:absolute;top:-100px;right:-100px;width:300px;height:300px;background:radial-gradient(circle, rgba(212,175,55,0.15) 0%, transparent 70%);border-radius:50%;pointer-events:none;"></div>
+    <div style="position:absolute;bottom:-50px;left:-50px;width:200px;height:200px;background:radial-gradient(circle, rgba(229,193,88,0.1) 0%, transparent 70%);border-radius:50%;pointer-events:none;"></div>
+
+    <div class="page-header" style="position:relative;z-index:1;">
+        <div>
+            <h1>Mon Profil</h1>
+            <p>Gérez vos informations personnelles</p>
+        </div>
+    </div>
+
+    <!-- Profile Card with Glass Effect -->
+    <div style="position:relative;background:linear-gradient(135deg, rgba(255,255,255,0.9), rgba(255,255,255,0.7));backdrop-filter:blur(20px);border-radius:24px;padding:40px;margin-bottom:32px;border:1px solid rgba(212,175,55,0.2);box-shadow:0 8px 32px rgba(212,175,55,0.1);">
+        <div style="display:flex;align-items:center;gap:32px;">
+            <!-- Avatar with glow effect -->
+            <div style="position:relative;">
+                <div style="width:120px;height:120px;border-radius:50%;background:linear-gradient(135deg, #D4AF37, #E5C158);display:flex;align-items:center;justify-content:center;font-size:3rem;font-weight:800;color:#fff;box-shadow:0 8px 24px rgba(212,175,55,0.4);">
+                    {{ user.first_name.0|default:user.username.0|upper }}
+                </div>
+                <div style="position:absolute;bottom:4px;right:4px;width:28px;height:28px;background:#34C759;border:3px solid #fff;border-radius:50%;"></div>
+            </div>
+            
+            <div style="flex:1;">
+                <h2 style="font-size:2rem;margin:0 0 8px 0;font-weight:800;background:linear-gradient(135deg, #1A1A1A, #333);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">{{ user.get_full_name|default:user.username }}</h2>
+                <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
+                    <span style="padding:6px 16px;background:rgba(212,175,55,0.1);color:#D4AF37;border-radius:20px;font-size:0.85rem;font-weight:700;">Étudiant</span>
+                    <span style="padding:6px 16px;background:rgba(52,199,89,0.1);color:#34C759;border-radius:20px;font-size:0.85rem;font-weight:700;">Actif</span>
+                </div>
+                <p style="margin:0;color:#8C8C8C;font-size:1rem;">{{ user.get_niveau_display|default:"Niveau non renseigné" }}</p>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- Info Cards with Modern Design -->
+    <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(300px, 1fr));gap:24px;">
+        <div style="background:#fff;border-radius:20px;padding:28px;border:1px solid #E8E8E5;transition:all 0.3s ease;position:relative;overflow:hidden;">
+            <div style="position:absolute;top:0;left:0;width:4px;height:100%;background:linear-gradient(180deg, #D4AF37, #E5C158);"></div>
+            <div style="display:flex;align-items:center;gap:16px;margin-bottom:16px;">
+                <div style="width:56px;height:56px;border-radius:16px;background:linear-gradient(135deg, rgba(212,175,55,0.15), rgba(229,193,88,0.15));display:flex;align-items:center;justify-content:center;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="2" style="width:28px;height:28px;"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                </div>
+                <div>
+                    <div style="font-size:0.75rem;font-weight:700;color:#8C8C8C;text-transform:uppercase;letter-spacing:0.05em;">Email</div>
+                    <div style="font-size:1.1rem;font-weight:700;color:#1A1A1A;margin-top:4px;">{{ user.email|default:"Non renseigné" }}</div>
+                </div>
+            </div>
+        </div>
+        
+        <div style="background:#fff;border-radius:20px;padding:28px;border:1px solid #E8E8E5;transition:all 0.3s ease;position:relative;overflow:hidden;">
+            <div style="position:absolute;top:0;left:0;width:4px;height:100%;background:linear-gradient(180deg, #007AFF, #5AC8FA);"></div>
+            <div style="display:flex;align-items:center;gap:16px;margin-bottom:16px;">
+                <div style="width:56px;height:56px;border-radius:16px;background:linear-gradient(135deg, rgba(0,122,255,0.15), rgba(90,200,250,0.15));display:flex;align-items:center;justify-content:center;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#007AFF" stroke-width="2" style="width:28px;height:28px;"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                </div>
+                <div>
+                    <div style="font-size:0.75rem;font-weight:700;color:#8C8C8C;text-transform:uppercase;letter-spacing:0.05em;">Téléphone</div>
+                    <div style="font-size:1.1rem;font-weight:700;color:#1A1A1A;margin-top:4px;">{{ user.telephone|default:"Non renseigné" }}</div>
+                </div>
+            </div>
+        </div>
+        
+        <div style="background:#fff;border-radius:20px;padding:28px;border:1px solid #E8E8E5;transition:all 0.3s ease;position:relative;overflow:hidden;">
+            <div style="position:absolute;top:0;left:0;width:4px;height:100%;background:linear-gradient(180deg, #34C759, #30D158);"></div>
+            <div style="display:flex;align-items:center;gap:16px;margin-bottom:16px;">
+                <div style="width:56px;height:56px;border-radius:16px;background:linear-gradient(135deg, rgba(52,199,89,0.15), rgba(48,209,88,0.15));display:flex;align-items:center;justify-content:center;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#34C759" stroke-width="2" style="width:28px;height:28px;"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+                </div>
+                <div>
+                    <div style="font-size:0.75rem;font-weight:700;color:#8C8C8C;text-transform:uppercase;letter-spacing:0.05em;">Niveau</div>
+                    <div style="font-size:1.1rem;font-weight:700;color:#1A1A1A;margin-top:4px;">{{ user.get_niveau_display|default:"Non renseigné" }}</div>
+                </div>
+            </div>
+        </div>
+        
+        <div style="background:#fff;border-radius:20px;padding:28px;border:1px solid #E8E8E5;transition:all 0.3s ease;position:relative;overflow:hidden;">
+            <div style="position:absolute;top:0;left:0;width:4px;height:100%;background:linear-gradient(180deg, #FF9500, #FF5E3A);"></div>
+            <div style="display:flex;align-items:center;gap:16px;margin-bottom:16px;">
+                <div style="width:56px;height:56px;border-radius:16px;background:linear-gradient(135deg, rgba(255,149,0,0.15), rgba(255,94,58,0.15));display:flex;align-items:center;justify-content:center;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#FF9500" stroke-width="2" style="width:28px;height:28px;"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                </div>
+                <div>
+                    <div style="font-size:0.75rem;font-weight:700;color:#8C8C8C;text-transform:uppercase;letter-spacing:0.05em;">Membre depuis</div>
+                    <div style="font-size:1.1rem;font-weight:700;color:#1A1A1A;margin-top:4px;">{{ user.date_joined|date:"d/m/Y" }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Section Documents Partagés -->
+    <div style="margin-top: 32px; background: #fff; border-radius: 20px; padding: 28px; border: 1px solid #E8E8E5;">
+        <h3 style="font-size: 1.25rem; font-weight: 800; color: #1A1A1A; margin-bottom: 24px; display: flex; align-items: center; gap: 10px;">
+            <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="#007AFF" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
+            Mes Documents (Cours & Examens)
+        </h3>
+        {% if mes_documents %}
+        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px;">
+            {% for doc in mes_documents %}
+            <div style="border: 1px solid #E8E8E5; border-radius: 12px; padding: 16px; display: flex; flex-direction: column; gap: 12px; transition: all 0.2s ease;" onmouseover="this.style.borderColor='#007AFF'; this.style.boxShadow='0 4px 12px rgba(0,122,255,0.1)';" onmouseout="this.style.borderColor='#E8E8E5'; this.style.boxShadow='none';">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                    <div style="font-weight: 700; color: #1A1A1A; font-size: 1rem;">{{ doc.titre }}</div>
+                    {% if doc.type_document == 'cours' %}
+                    <span style="font-size: 0.7rem; padding: 4px 8px; background: rgba(52,199,89,0.1); color: #34C759; border-radius: 8px; font-weight: 700;">Cours</span>
+                    {% else %}
+                    <span style="font-size: 0.7rem; padding: 4px 8px; background: rgba(255,149,0,0.1); color: #FF9500; border-radius: 8px; font-weight: 700;">Examen</span>
+                    {% endif %}
+                </div>
+                <div style="font-size: 0.85rem; color: #8C8C8C;">
+                    {% if doc.cours %}Lié au cours: {{ doc.cours.titre }}<br>{% endif %}
+                    {% if doc.examen %}Lié à l'examen: {{ doc.examen.titre }}<br>{% endif %}
+                    Partagé le {{ doc.date_creation|date:"d/m/Y" }}
+                </div>
+                <a href="{{ doc.fichier.url }}" target="_blank" style="margin-top: auto; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 10px; background: #007AFF; color: #fff; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 0.9rem; transition: background 0.2s ease;" onmouseover="this.style.background='#0056b3';" onmouseout="this.style.background='#007AFF';">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                    Ouvrir le PDF
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div style="text-align: center; padding: 40px; color: #8C8C8C;">
+            <svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.5" style="margin-bottom: 16px; opacity: 0.5;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            <p style="margin: 0;">Aucun document n'a encore été partagé avec vous.</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

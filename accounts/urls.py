@@ -1,0 +1,45 @@
+from django.urls import path
+from . import views
+
+urlpatterns = [
+    path('connexion/', views.login_view, name='login'),
+    path('deconnexion/', views.logout_view, name='logout'),
+    path('dashboard/', views.dashboard_redirect, name='dashboard'),
+    path('dashboard/admin/', views.dashboard_admin_view, name='dashboard_admin'),
+    path('dashboard/etudiant/', views.dashboard_etudiant_view, name='dashboard_etudiant'),
+    # Pages sidebar admin
+    path('dashboard/classes/', views.dashboard_classes_view, name='dashboard_classes'),
+    path('dashboard/classes/<int:classe_id>/edit/', views.edit_classe_view, name='edit_classe'),
+    path('dashboard/emploi-temps/', views.emploi_temps_view, name='dashboard_emploi_temps'),
+    path('dashboard/eleves/', views.dashboard_eleves_view, name='dashboard_eleves'),
+    path('dashboard/eleves/<int:etudiant_id>/edit/', views.edit_etudiant_view, name='edit_etudiant'),
+    path('dashboard/eleves/<int:etudiant_id>/toggle/', views.toggle_etudiant_active_view, name='toggle_etudiant_active'),
+    path('dashboard/professeurs/', views.dashboard_professeurs_view, name='dashboard_professeurs'),
+    path('dashboard/professeurs/<int:professeur_id>/edit/', views.edit_professeur_view, name='edit_professeur'),
+    path('dashboard/professeurs/<int:professeur_id>/toggle/', views.toggle_professeur_active_view, name='toggle_professeur_active'),
+    path('dashboard/cours/', views.dashboard_cours_view, name='dashboard_cours'),
+    path('dashboard/cours/<int:cours_id>/edit/', views.edit_cours_view, name='edit_cours'),
+    path('dashboard/cours/<int:cours_id>/delete/', views.delete_cours_view, name='delete_cours'),
+    path('dashboard/presences/', views.dashboard_presences_view, name='dashboard_presences'),
+    path('dashboard/examens/', views.dashboard_examens_view, name='dashboard_examens'),
+    path('dashboard/paiements/', views.dashboard_paiements_view, name='dashboard_paiements'),
+    path('dashboard/paiements/<int:paiement_id>/statut/', views.update_paiement_statut_view, name='update_paiement_statut'),
+    path('dashboard/paiements/<int:paiement_id>/delete/', views.delete_paiement_view, name='delete_paiement'),
+    path('dashboard/messages/', views.dashboard_messages_view, name='dashboard_messages'),
+    path('dashboard/messages/<int:message_id>/toggle/', views.toggle_message_status, name='toggle_message_status'),
+    path('dashboard/messages/<int:message_id>/detail/', views.message_detail_view, name='message_detail'),
+    path('dashboard/messages/<int:message_id>/edit/', views.message_edit_view, name='message_edit'),
+    path('dashboard/messages/<int:message_id>/delete/', views.message_delete_view, name='message_delete'),
+    path('dashboard/rapports/', views.dashboard_rapports_view, name='dashboard_rapports'),
+    # Chat
+    path('dashboard/chat/', views.chat_view, name='dashboard_chat'),
+    path('dashboard/chat/messages/<int:user_id>/', views.chat_messages_view, name='chat_messages'),
+    path('dashboard/chat/send/', views.chat_send_view, name='chat_send'),
+    path('etudiant/chat/', views.chat_etudiant_view, name='etudiant_chat'),
+    # Pages sidebar étudiant
+    path('etudiant/profile/', views.etudiant_profile_view, name='etudiant_profile'),
+    path('etudiant/cours/', views.etudiant_cours_view, name='etudiant_cours'),
+    path('etudiant/examens/', views.etudiant_examens_view, name='etudiant_examens'),
+    path('etudiant/presence/', views.etudiant_presence_view, name='etudiant_presence'),
+    path('etudiant/emploi-temps/', views.emploi_temps_view, name='etudiant_emploi_temps'),
+]

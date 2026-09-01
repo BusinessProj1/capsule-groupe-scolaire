@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Témoignages - Plateforme Éducative Premium{% endblock %}
+{% block nav_temoignages %}active{% endblock %}
+
+{% block content %}
+    <section class="section" id="temoignages">
+        <div class="container">
+            <div class="sec-head center reveal">
+                <span class="kicker">Avis de nos élèves</span>
+                <h2>Témoignages <span class="gradient-text">authentiques</span></h2>
+                <p class="sec-sub">Lisez les avis de ceux qui nous font confiance ou laissez votre propre témoignage ci-dessous.</p>
+            </div>
+
+            <div style="max-width: 600px; margin: 0 auto 60px auto;">
+                <form class="card reveal" style="padding: 30px;" method="post" action="{% url 'temoignages' %}">
+                    {% csrf_token %}
+                    <h3 style="margin-bottom: 20px;">Laissez un avis</h3>
+                    <div class="form-group" style="margin-bottom: 1rem;">
+                        <input type="text" name="nom" required placeholder="Votre prénom / nom" id="comment-name">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 1rem;">
+                        <input type="text" name="role" placeholder="Ex: Élève en 2ème Bac SM" id="comment-role">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 1.5rem;">
+                        <textarea name="texte" required rows="3" placeholder="Partagez votre expérience..." id="comment-text"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">Publier mon avis</button>
+                </form>
+            </div>
+
+            <div class="grid-2" id="comments-list">
+                {% for temoignage in temoignages %}
+                <div class="card reveal active">
+                    <div class="temoignage-stars">★★★★★</div>
+                    <p class="temoignage-msg">"{{ temoignage.texte }}"</p>
+                    <div style="display: flex; align-items: center; gap: 16px;">
+                        <div class="avatar">{{ temoignage.avatar }}</div>
+                        <div>
+                            <b style="font-size: 1.1rem;">{{ temoignage.nom }}</b><br>
+                            <small style="color: var(--text-muted); font-weight: 500;">{{ temoignage.role }}</small>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="center" style="grid-column: 1 / -1;">
+                    <p style="color: var(--text-muted);">Aucun témoignage pour le moment. Soyez le premier à partager votre expérience !</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+{% endblock %}

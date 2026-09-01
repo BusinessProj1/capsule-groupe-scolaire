@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Méthode - Plateforme Éducative Premium{% endblock %}
+{% block nav_methode %}active{% endblock %}
+
+{% block content %}
+    <section class="section" id="presentation">
+        <div class="container">
+            <div class="grid-2" style="margin-bottom: 60px;">
+                <div class="reveal">
+                    <span class="kicker">Notre Méthode</span>
+                    <h2>Pourquoi une <span class="gradient-text">approche progressive</span> ?</h2>
+                    <p class="sec-sub">Nous ne construisons pas directement une plateforme complexe. Chaque étape a une raison d'être, et prépare naturellement la suivante grâce à un processus d'ingénierie soigné.</p>
+                </div>
+                <div class="reveal" style="transition-delay: 0.2s;">
+                    <img src="{% static 'images/metho.png' %}" alt="Methodology" class="hero-img">
+                </div>
+            </div>
+
+            <div class="grid-3">
+                <article class="card reveal">
+                    <div class="card-ico">01</div>
+                    <h3>Évaluation Initiale</h3>
+                    <p>Déterminer précisément le niveau, les lacunes et le profil d'apprentissage de l'élève avant de commencer.</p>
+                </article>
+                <article class="card reveal" style="transition-delay: 0.1s;">
+                    <div class="card-ico">02</div>
+                    <h3>Compréhension du cours</h3>
+                    <p>Reprise des fondamentaux théoriques avec des explications claires et des démonstrations adaptées.</p>
+                </article>
+                <article class="card reveal" style="transition-delay: 0.2s;">
+                    <div class="card-ico">03</div>
+                    <h3>Application directe</h3>
+                    <p>Exercices d'application directe pour valider la bonne compréhension des concepts de base.</p>
+                </article>
+                <article class="card reveal" style="transition-delay: 0.3s;">
+                    <div class="card-ico">04</div>
+                    <h3>Exercices de synthèse</h3>
+                    <p>Problèmes transversaux nécessitant de l'analyse et mobilisant plusieurs concepts simultanément.</p>
+                </article>
+                <article class="card reveal" style="transition-delay: 0.4s;">
+                    <div class="card-ico">05</div>
+                    <h3>Préparation aux examens</h3>
+                    <p>Mise en situation, gestion du stress et du temps sur de vrais sujets du Baccalauréat national.</p>
+                </article>
+            </div>
+        </div>
+    </section>
+{% endblock %}

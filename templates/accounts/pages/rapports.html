@@ -1,0 +1,90 @@
+{% extends "accounts/dashboard_base.html" %}
+{% block title %}Rapports{% endblock %}
+{% block extra_head %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+{% endblock %}
+{% block extra_css %}
+    .report-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-bottom: 24px; }
+    .report-chart { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; }
+    .report-chart h3 { font-size: 0.95rem; font-weight: 700; color: var(--text-dark); margin-bottom: 16px; }
+    .chart-box { position: relative; height: 220px; }
+    @media (max-width: 900px) { .report-grid { grid-template-columns: 1fr; } }
+{% endblock %}
+{% block content %}
+<div class="page-header">
+    <div><h1>Rapports</h1><p>Vue d'ensemble et statistiques</p></div>
+</div>
+
+<div class="stats-row">
+    <div class="stat-card"><div><div class="stat-label">Total élèves</div><div class="stat-value">{{ total_eleves }}</div></div><div class="stat-icon gold"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div></div>
+    <div class="stat-card"><div><div class="stat-label">Professeurs</div><div class="stat-value">{{ total_profs }}</div></div><div class="stat-icon blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div></div>
+    <div class="stat-card"><div><div class="stat-label">Cours</div><div class="stat-value">{{ total_cours }}</div></div><div class="stat-icon green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></div></div>
+    <div class="stat-card"><div><div class="stat-label">Revenus totaux</div><div class="stat-value" style="font-size:1.4rem;">{{ revenus_total|floatformat:0 }} <small style="font-size:0.7rem;color:var(--text-muted);">MAD</small></div></div><div class="stat-icon orange"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div></div>
+</div>
+
+<div class="report-grid">
+    <div class="report-chart">
+        <h3>Répartition des élèves par niveau</h3>
+        {% if total_eleves > 0 %}
+        <div class="chart-box"><canvas id="repartitionChart"></canvas></div>
+        {% else %}
+        <div class="empty-state"><p>Aucun élève inscrit</p></div>
+        {% endif %}
+    </div>
+    <div class="report-chart">
+        <h3>Paiements par statut</h3>
+        {% if paiements_total > 0 %}
+        <div class="chart-box"><canvas id="paiementsChart"></canvas></div>
+        {% else %}
+        <div class="empty-state"><p>Aucun paiement enregistré</p></div>
+        {% endif %}
+    </div>
+    <div class="report-chart">
+        <h3>Présences globales</h3>
+        {% if presences_total > 0 %}
+        <div class="chart-box"><canvas id="presencesChart"></canvas></div>
+        {% else %}
+        <div class="empty-state"><p>Aucune présence enregistrée</p></div>
+        {% endif %}
+    </div>
+    <div class="report-chart">
+        <h3>Examens par type</h3>
+        {% if examens_total > 0 %}
+        <div class="chart-box"><canvas id="examensChart"></canvas></div>
+        {% else %}
+        <div class="empty-state"><p>Aucun examen planifié</p></div>
+        {% endif %}
+    </div>
+</div>
+
+<div class="card">
+    <h3 style="font-size:0.95rem;font-weight:700;color:var(--text-dark);margin-bottom:16px;">Récapitulatif des paiements</h3>
+    <table class="data-table">
+        <thead><tr><th>Type</th><th>Payés</th><th>En attente</th><th>Montant total</th></tr></thead>
+        <tbody>
+            <tr><td style="font-weight:700;">Frais de scolarité</td><td>{{ scolarite_payes }}</td><td>{{ scolarite_attente }}</td><td style="font-weight:800;">{{ scolarite_montant|floatformat:0 }} MAD</td></tr>
+            <tr><td style="font-weight:700;">Frais d'inscription</td><td>{{ inscription_payes }}</td><td>{{ inscription_attente }}</td><td style="font-weight:800;">{{ inscription_montant|floatformat:0 }} MAD</td></tr>
+            <tr><td style="font-weight:700;">Frais d'examen</td><td>{{ examen_payes }}</td><td>{{ examen_attente }}</td><td style="font-weight:800;">{{ examen_montant|floatformat:0 }} MAD</td></tr>
+        </tbody>
+    </table>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+const chartColors = { gold: '#D4AF37', dark: '#333', accent: '#E5C158', blue: '#007AFF', green: '#34C759', orange: '#FF9500', red: '#FF3B30' };
+const chartOpts = { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { padding: 12, font: { size: 11, weight: '600' } } } } };
+
+const r = document.getElementById('repartitionChart');
+if (r) new Chart(r, { type: 'doughnut', data: { labels: ['Primaire','Collège','Lycée'], datasets: [{ data: [{{ primaire }},{{ college }},{{ lycee }}], backgroundColor: [chartColors.gold, chartColors.dark, chartColors.accent], borderWidth: 0, cutout: '65%' }] }, options: chartOpts });
+
+const p = document.getElementById('paiementsChart');
+if (p) new Chart(p, { type: 'doughnut', data: { labels: ['Payés','En attente','Annulés'], datasets: [{ data: [{{ payes }},{{ en_attente }},{{ annules }}], backgroundColor: [chartColors.green, chartColors.orange, chartColors.red], borderWidth: 0, cutout: '65%' }] }, options: chartOpts });
+
+const pr = document.getElementById('presencesChart');
+if (pr) new Chart(pr, { type: 'bar', data: { labels: ['Présents','Absents','En retard'], datasets: [{ data: [{{ presents }},{{ absents }},{{ retards }}], backgroundColor: [chartColors.green, chartColors.red, chartColors.orange], borderRadius: 8, barThickness: 40 }] }, options: { ...chartOpts, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { stepSize: 1 }, grid: { color: 'rgba(0,0,0,0.04)' } }, x: { grid: { display: false } } } } });
+
+const ex = document.getElementById('examensChart');
+if (ex) new Chart(ex, { type: 'bar', data: { labels: ['Contrôle','Devoir','Composition','Régional','National'], datasets: [{ data: [{{ type_controle }},{{ type_devoir }},{{ type_composition }},{{ type_regional }},{{ type_national }}], backgroundColor: [chartColors.gold, chartColors.blue, chartColors.green, chartColors.orange, chartColors.dark], borderRadius: 8, barThickness: 30 }] }, options: { ...chartOpts, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { stepSize: 1 }, grid: { color: 'rgba(0,0,0,0.04)' } }, x: { grid: { display: false } } } } });
+</script>
+{% endblock %}

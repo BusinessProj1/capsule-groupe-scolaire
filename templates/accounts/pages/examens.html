@@ -1,0 +1,132 @@
+{% extends "accounts/dashboard_base.html" %}
+{% block title %}Examens{% endblock %}
+{% block content %}
+<div class="page-header">
+    <div><h1>Examens</h1><p>Planning des examens et documents partagés</p></div>
+    <div style="display: flex; gap: 10px;">
+        <button class="btn-add" onclick="openDocModal()" style="background: var(--blue); border-color: var(--blue);">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
+            Partager un PDF
+        </button>
+        <button class="btn-add" onclick="openModal()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Planifier un examen
+        </button>
+    </div>
+</div>
+<div class="stats-row">
+    <div class="stat-card"><div><div class="stat-label">Total</div><div class="stat-value">{{ total }}</div></div><div class="stat-icon gold"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div></div>
+    <div class="stat-card"><div><div class="stat-label">À venir</div><div class="stat-value">{{ a_venir }}</div></div><div class="stat-icon blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div></div>
+    <div class="stat-card"><div><div class="stat-label">Passés</div><div class="stat-value">{{ passes }}</div></div><div class="stat-icon green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg></div></div>
+</div>
+<div class="card">
+    {% if examens %}
+    <table class="data-table">
+        <thead><tr><th>Date</th><th>Titre</th><th>Matière</th><th>Classe</th><th>Type</th></tr></thead>
+        <tbody>{% for e in examens %}<tr>
+            <td><div style="display:flex;flex-direction:column;align-items:center;width:44px;padding:6px;border-radius:10px;background:var(--primary-bg);border:1px solid var(--primary-border);"><span style="font-size:1.1rem;font-weight:800;color:var(--primary);line-height:1;">{{ e.date|date:"d" }}</span><span style="font-size:0.6rem;font-weight:700;color:var(--primary);text-transform:uppercase;">{{ e.date|date:"M" }}</span></div></td>
+            <td style="font-weight:700;">{{ e.titre }}</td>
+            <td style="color:var(--text-muted);">{{ e.matiere }}</td>
+            <td><span class="badge badge-gold">{{ e.classe }}</span></td>
+            <td><span class="badge badge-info">{{ e.get_type_examen_display }}</span></td>
+        </tr>{% endfor %}</tbody>
+    </table>
+    {% else %}
+    <div class="empty-state"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><p>Aucun examen planifié</p><p class="sub">Planifiez un examen via le bouton ci-dessus</p></div>
+    {% endif %}
+</div>
+
+<div class="card" style="margin-top: 20px;">
+    <h3 style="margin-top:0; margin-bottom:15px; font-size:1rem; color:var(--text-dark); display:flex; align-items:center; gap:8px;">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--blue);"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        Documents d'examen partagés
+    </h3>
+    {% if documents_list %}
+    <table class="data-table">
+        <thead><tr><th>Document</th><th>Lié à l'examen</th><th>Classes autorisées</th><th>Étudiants autorisés</th><th>Professeurs autorisés</th><th>Date</th><th style="text-align:right;">Fichier</th></tr></thead>
+        <tbody>{% for doc in documents_list %}<tr>
+            <td style="font-weight:700;">{{ doc.titre }}</td>
+            <td style="color:var(--text-muted);">{{ doc.examen|default:"—" }}</td>
+            <td>
+                {% for c in doc.classes_autorisees.all %}
+                <span class="badge badge-gold" style="margin-bottom:2px; display:inline-block;">{{ c.niveau }}</span>
+                {% empty %}<span style="color:var(--text-light); font-size: 0.85rem;">—</span>{% endfor %}
+            </td>
+            <td>
+                {% for e in doc.etudiants_autorises.all %}
+                <span class="badge" style="background:rgba(0,122,255,0.1); color:#007AFF; margin-bottom:2px; display:inline-block;">{{ e.get_full_name|default:e.username }}</span>
+                {% empty %}<span style="color:var(--text-light); font-size: 0.85rem;">—</span>{% endfor %}
+            </td>
+            <td>
+                {% for p in doc.professeurs_autorises.all %}
+                <span class="badge" style="background:rgba(255,149,0,0.1); color:#FF9500; margin-bottom:2px; display:inline-block;">{{ p.nom }} {{ p.prenom }}</span>
+                {% empty %}<span style="color:var(--text-light); font-size: 0.85rem;">—</span>{% endfor %}
+            </td>
+            <td style="color:var(--text-muted);">{{ doc.date_creation|date:"d/m/Y H:i" }}</td>
+            <td style="text-align:right;">
+                <a href="{{ doc.fichier.url }}" target="_blank" class="btn-action" style="padding:6px 12px; color:#fff; background:var(--blue); border-radius:8px; text-decoration:none; font-size:0.85rem; font-weight:600;" title="Télécharger">
+                    Ouvrir
+                </a>
+            </td>
+        </tr>{% endfor %}</tbody>
+    </table>
+    {% else %}
+    <div class="empty-state"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><p>Aucun document partagé</p><p class="sub">Partagez un document PDF via le bouton ci-dessus</p></div>
+    {% endif %}
+</div>
+{% endblock %}
+{% block modal_content %}
+<div class="modal-box">
+    <div class="modal-header"><h2>Planifier un examen</h2><button class="modal-close" onclick="closeModal()"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
+    <form method="post">{% csrf_token %}
+        <div class="modal-body">
+            {% if form.errors and not show_doc_modal %}<ul class="form-errors">{% for field in form %}{% for error in field.errors %}<li>{{ field.label }}: {{ error }}</li>{% endfor %}{% endfor %}</ul>{% endif %}
+            {% for field in form %}<div class="form-group"><label>{{ field.label }}</label>{{ field }}</div>{% endfor %}
+        </div>
+        <div class="modal-footer"><button type="button" class="btn-cancel" onclick="closeModal()">Annuler</button><button type="submit" class="btn-submit">Planifier</button></div>
+    </form>
+</div>
+
+{% endblock %}
+
+{% block extra_modals %}
+<!-- Modal for PDF -->
+<div class="modal-overlay" id="doc-modal-overlay">
+    <div class="modal-box">
+        <div class="modal-header"><h2>Partager un PDF</h2><button class="modal-close" onclick="closeDocModal()"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
+        <form method="post" enctype="multipart/form-data">{% csrf_token %}
+            <input type="hidden" name="action" value="upload_pdf">
+            <div class="modal-body">
+                {% if doc_form.errors and show_doc_modal %}<ul class="form-errors">{% for field in doc_form %}{% for error in field.errors %}<li>{{ field.label }}: {{ error }}</li>{% endfor %}{% endfor %}</ul>{% endif %}
+                {% for field in doc_form %}
+                <div class="form-group">
+                    <label>{{ field.label }}</label>
+                    {{ field }}
+                </div>
+                {% endfor %}
+                <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 10px;">Si une classe est sélectionnée, tous ses élèves auront accès au document.</p>
+            </div>
+            <div class="modal-footer"><button type="button" class="btn-cancel" onclick="closeDocModal()">Annuler</button><button type="submit" class="btn-submit" style="background: var(--blue);">Partager</button></div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function openDocModal() {
+    document.getElementById('doc-modal-overlay').classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
+function closeDocModal() {
+    document.getElementById('doc-modal-overlay').classList.remove('active');
+    document.body.style.overflow = '';
+}
+document.getElementById('doc-modal-overlay').addEventListener('click', (e) => {
+    if (e.target === e.currentTarget) closeDocModal();
+});
+{% if show_doc_modal %}
+window.addEventListener('DOMContentLoaded', () => openDocModal());
+{% endif %}
+</script>
+{% endblock %}

@@ -1,0 +1,63 @@
+{% extends "accounts/dashboard_base.html" %}
+{% block title %}Paiements{% endblock %}
+{% block content %}
+<div class="page-header">
+    <div><h1>Paiements</h1><p>Suivi des paiements et frais</p></div>
+    <button class="btn-add" onclick="openModal()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Enregistrer un paiement
+    </button>
+</div>
+<div class="stats-row">
+    <div class="stat-card"><div><div class="stat-label">Total</div><div class="stat-value">{{ total }}</div></div><div class="stat-icon gold"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></div></div>
+    <div class="stat-card"><div><div class="stat-label">Payés</div><div class="stat-value">{{ payes }}</div></div><div class="stat-icon green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg></div></div>
+    <div class="stat-card"><div><div class="stat-label">En attente</div><div class="stat-value">{{ en_attente }}</div></div><div class="stat-icon orange"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div></div>
+    <div class="stat-card"><div><div class="stat-label">Montant total</div><div class="stat-value" style="font-size:1.4rem;">{{ montant_total|floatformat:0 }} <small style="font-size:0.7rem;color:var(--text-muted);">MAD</small></div></div><div class="stat-icon blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div></div>
+</div>
+<div class="card">
+    {% if paiements %}
+    <table class="data-table">
+        <thead><tr><th>Étudiant</th><th>Type</th><th>Montant</th><th>Date</th><th>Statut</th><th>Actions</th></tr></thead>
+        <tbody>{% for p in paiements %}<tr>
+            <td style="font-weight:700;">{{ p.etudiant.get_full_name|default:p.etudiant.username }}</td>
+            <td style="color:var(--text-muted);">{{ p.get_type_paiement_display }}</td>
+            <td style="font-weight:800;">{{ p.montant|floatformat:0 }} MAD</td>
+            <td style="color:var(--text-muted);">{{ p.date|date:"d/m/Y" }}</td>
+            <td>{% if p.statut == 'paye' %}<span class="badge badge-success">Payé</span>{% elif p.statut == 'en_attente' %}<span class="badge badge-warning">En attente</span>{% else %}<span class="badge badge-danger">Annulé</span>{% endif %}</td>
+            <td>
+                <div style="display:flex;gap:4px;">
+                    <form method="post" action="{% url 'update_paiement_statut' p.id %}" style="display:inline;">
+                        {% csrf_token %}
+                        <select name="statut" onchange="this.form.submit()" style="padding:4px;border:1px solid var(--border);border-radius:4px;font-size:0.75rem;">
+                            <option value="paye" {% if p.statut == 'paye' %}selected{% endif %}>Payé</option>
+                            <option value="en_attente" {% if p.statut == 'en_attente' %}selected{% endif %}>En attente</option>
+                            <option value="annule" {% if p.statut == 'annule' %}selected{% endif %}>Annulé</option>
+                        </select>
+                    </form>
+                    <form method="post" action="{% url 'delete_paiement' p.id %}" style="display:inline;" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce paiement ?');">
+                        {% csrf_token %}
+                        <button type="submit" style="padding:4px 8px;border:none;background:var(--danger-bg);color:var(--danger);border-radius:4px;cursor:pointer;" title="Supprimer">
+                            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                        </button>
+                    </form>
+                </div>
+            </td>
+        </tr>{% endfor %}</tbody>
+    </table>
+    {% else %}
+    <div class="empty-state"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg><p>Aucun paiement enregistré</p><p class="sub">Enregistrez un paiement via le bouton ci-dessus</p></div>
+    {% endif %}
+</div>
+{% endblock %}
+{% block modal_content %}
+<div class="modal-box">
+    <div class="modal-header"><h2>Enregistrer un paiement</h2><button class="modal-close" onclick="closeModal()"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
+    <form method="post">{% csrf_token %}
+        <div class="modal-body">
+            {% if form.errors %}<ul class="form-errors">{% for field in form %}{% for error in field.errors %}<li>{{ field.label }}: {{ error }}</li>{% endfor %}{% endfor %}</ul>{% endif %}
+            {% for field in form %}<div class="form-group"><label>{{ field.label }}</label>{{ field }}</div>{% endfor %}
+        </div>
+        <div class="modal-footer"><button type="button" class="btn-cancel" onclick="closeModal()">Annuler</button><button type="submit" class="btn-submit">Enregistrer</button></div>
+    </form>
+</div>
+{% endblock %}

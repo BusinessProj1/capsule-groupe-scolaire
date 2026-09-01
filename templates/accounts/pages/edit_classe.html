@@ -1,0 +1,58 @@
+{% extends "accounts/dashboard_base.html" %}
+{% block title %}Modifier la classe{% endblock %}
+{% block content %}
+<div class="page-header">
+    <div>
+        <h1>Modifier : {{ classe.nom }}</h1>
+        <p>Ajustez les informations de la classe</p>
+    </div>
+    <a href="{% url 'dashboard_classes' %}" class="btn-cancel" style="text-decoration:none; display:inline-flex; align-items:center; gap:8px;">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+        Retour aux classes
+    </a>
+</div>
+
+<style>
+    .edit-classe-form input, .edit-classe-form select {
+        width: 100%;
+        padding: 14px 16px;
+        border: 2px solid #E8E8E5;
+        border-radius: 12px;
+        font-size: 1rem;
+        transition: all 0.2s ease;
+        background: #fff;
+        color: var(--text-main);
+    }
+    .edit-classe-form input:focus, .edit-classe-form select:focus {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(212,175,55,0.1);
+    }
+</style>
+
+<div class="card edit-classe-form" style="max-width: 600px; padding: 32px; border-radius: 24px; box-shadow: 0 8px 32px rgba(0,0,0,0.04);">
+    <form method="POST">
+        {% csrf_token %}
+        {% if form.errors %}
+        <ul class="form-errors" style="color:var(--danger); margin-bottom: 20px;">
+            {% for field in form %}{% for error in field.errors %}<li>{{ field.label }}: {{ error }}</li>{% endfor %}{% endfor %}
+            {% for error in form.non_field_errors %}<li>{{ error }}</li>{% endfor %}
+        </ul>
+        {% endif %}
+        
+        {% for field in form %}
+        <div class="form-group" style="margin-bottom:20px;">
+            <label for="{{ field.id_for_label }}" style="display:block; font-size:0.85rem; font-weight:700; color:var(--text-muted); margin-bottom:8px; text-transform:uppercase;">
+                {{ field.label }}
+            </label>
+            {{ field }}
+        </div>
+        {% endfor %}
+        
+        <div style="display:flex; justify-content:flex-end; gap:12px; margin-top:30px;">
+            <a href="{% url 'dashboard_classes' %}" class="btn-cancel" style="text-decoration:none; display:inline-block; padding: 10px 20px;">Annuler</a>
+            <button type="submit" style="padding: 10px 24px; background: var(--primary); color: white; border: none; border-radius: var(--radius-sm); font-weight: 700; cursor: pointer;">Mettre à jour</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

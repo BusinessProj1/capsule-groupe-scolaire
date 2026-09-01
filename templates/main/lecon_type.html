@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Cours de Mathématiques 2ème Année Bac SM{% endblock %}
+{% block nav_cours %}active{% endblock %}
+
+{% block content %}
+    <section class="section">
+        <div class="container">
+            <div class="sec-head center reveal">
+                <span class="kicker">2ème Année Bac - Sciences Maths</span>
+                <h2>Cours de <span class="gradient-text">Mathématiques Avancées</span></h2>
+                <p class="sec-sub">Préparation intensive à l'examen national et perfectionnement des bases analytiques.</p>
+            </div>
+
+            <div class="card reveal" style="max-width: 800px; margin: 0 auto;">
+                <h3 style="margin-bottom: 20px;">Programme abordé</h3>
+                <ul class="hero-points" style="margin-bottom: 30px;">
+                    <li><svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/></svg> Limites et continuité</li>
+                    <li><svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/></svg> Dérivation et étude de fonctions</li>
+                    <li><svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/></svg> Suites numériques et récurrence</li>
+                    <li><svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/></svg> Calcul intégral et primitives</li>
+                    <li><svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/></svg> Nombres complexes et géométrie</li>
+                </ul>
+
+                <div style="background: rgba(59, 130, 246, 0.05); padding: 20px; border-radius: 12px; margin-bottom: 30px; border: 1px solid rgba(59, 130, 246, 0.2);">
+                    <h4 style="margin-bottom: 10px;">Le mot du professeur :</h4>
+                    <p style="margin: 0; font-size: 1rem;">"La filière Sciences Maths exige de la rigueur et une parfaite maîtrise de l'abstraction. Nous travaillerons sur des exercices types de l'examen national ainsi que sur des problèmes ouverts pour construire une logique solide."</p>
+                </div>
+
+                <div style="display: flex; gap: 15px;">
+                    <a href="{% url 'ressources' %}" class="btn btn-outline">Voir les ressources Drive</a>
+                    <a href="{% url 'contact' %}" class="btn btn-primary">Réserver un premier cours</a>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

@@ -1,0 +1,44 @@
+{% extends 'accounts/dashboard_etudiant_base.html' %}
+{% load static %}
+
+{% block title %}Mes Cours - Capsule Groupe Scolaire{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h1>Mes Cours</h1>
+        <p>Consultez vos cours et ressources pédagogiques</p>
+    </div>
+</div>
+
+<div class="card">
+    {% if cours %}
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Matière</th>
+                    <th>Professeur</th>
+                    <th>Date</th>
+                    <th>Statut</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for cours_item in cours %}
+                <tr>
+                    <td>{{ cours_item.matiere }}</td>
+                    <td>{{ cours_item.professeur }}</td>
+                    <td>{{ cours_item.date|date:"d/m/Y" }}</td>
+                    <td><span class="badge badge-success">Actif</span></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <div class="empty-state">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+            <p>Aucun cours disponible</p>
+            <p class="sub">Vos cours apparaîtront ici une fois assignés</p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

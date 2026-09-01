@@ -1,0 +1,159 @@
+{% extends "accounts/dashboard_base.html" %}
+{% block title %}Messages{% endblock %}
+{% block content %}
+<div class="page-header">
+    <div>
+        <h1>Messages</h1>
+        <p>Messages de contact et réservations reçus</p>
+    </div>
+</div>
+
+<div class="stats-row">
+    <div class="stat-card">
+        <div><div class="stat-label">Total messages</div><div class="stat-value">{{ total }}</div></div>
+        <div class="stat-icon gold"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div>
+    </div>
+    <div class="stat-card">
+        <div><div class="stat-label">Non lus</div><div class="stat-value">{{ non_lus }}</div></div>
+        <div class="stat-icon orange"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></div>
+    </div>
+    <div class="stat-card">
+        <div><div class="stat-label">Lus</div><div class="stat-value">{{ lus }}</div></div>
+        <div class="stat-icon green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg></div>
+    </div>
+</div>
+
+<div class="card">
+    {% if messages_list %}
+    <table class="data-table">
+        <thead><tr><th>Nom</th><th>Niveau</th><th>Format</th><th>Détails</th><th>Date</th><th>Statut</th><th>Actions</th></tr></thead>
+        <tbody>
+            {% for m in messages_list %}
+            <tr{% if not m.lu %} style="background:rgba(212,175,55,0.03);"{% endif %}>
+                <td style="font-weight:700;">{{ m.nom }}</td>
+                <td><span class="badge badge-gold">{{ m.niveau }}</span></td>
+                <td style="color:var(--text-muted);">{{ m.get_format_cours_display }}</td>
+                <td style="color:var(--text-muted);max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ m.details|default:"—" }}</td>
+                <td style="color:var(--text-muted);font-size:0.85rem;">{{ m.date_creation|date:"d/m/Y H:i" }}</td>
+                <td>
+                    {% if m.lu %}<span class="badge badge-success">Lu</span>
+                    {% else %}<span class="badge badge-warning">Non lu</span>{% endif %}
+                </td>
+                <td style="display:flex;gap:8px;flex-wrap:wrap;">
+                    <a href="{% url 'message_detail' m.id %}" style="display:inline-flex;align-items:center;justify-content:center;padding:8px;border-radius:6px;text-decoration:none;background:var(--info-bg);color:var(--info);" title="Détails">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                    </a>
+                    <a href="{% url 'message_edit' m.id %}" style="display:inline-flex;align-items:center;justify-content:center;padding:8px;border-radius:6px;text-decoration:none;background:var(--warning-bg);color:var(--warning);" title="Modifier">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14а2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                    </a>
+                    <a href="{% url 'toggle_message_status' m.id %}" style="display:inline-flex;align-items:center;justify-content:center;padding:8px;border-radius:6px;text-decoration:none;{% if m.lu %}background:var(--warning-bg);color:var(--warning);{% else %}background:var(--success-bg);color:var(--success);{% endif %}" title="{% if m.lu %}Marquer non lu{% else %}Marquer lu{% endif %}">
+                        {% if m.lu %}
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                        {% else %}
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                        {% endif %}
+                    </a>
+                    <a href="{% url 'message_delete' m.id %}" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce message ?')" style="display:inline-flex;align-items:center;justify-content:center;padding:8px;border-radius:6px;text-decoration:none;background:var(--danger-bg);color:var(--danger);" title="Supprimer">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="empty-state">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        <p>Aucun message reçu</p>
+        <p class="sub">Les messages de contact apparaîtront ici</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block modal_content %}
+{% if show_detail_modal and message %}
+<div class="modal-box" style="max-width:600px;">
+    <div class="modal-header">
+        <h2>Détails du message</h2>
+        <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+        <div class="form-group">
+            <label>Nom</label>
+            <div style="font-weight:700;font-size:1rem;">{{ message.nom }}</div>
+        </div>
+        <div class="form-group">
+            <label>Niveau</label>
+            <div><span class="badge badge-gold">{{ message.niveau }}</span></div>
+        </div>
+        <div class="form-group">
+            <label>Format</label>
+            <div>{{ message.get_format_cours_display }}</div>
+        </div>
+        <div class="form-group">
+            <label>Détails</label>
+            <div style="background:var(--body-bg);padding:12px;border-radius:8px;">{{ message.details|default:"—" }}</div>
+        </div>
+        <div class="form-group">
+            <label>Date</label>
+            <div>{{ message.date_creation|date:"d/m/Y H:i" }}</div>
+        </div>
+        <div class="form-group">
+            <label>Statut</label>
+            <div>{% if message.lu %}<span class="badge badge-success">Lu</span>{% else %}<span class="badge badge-warning">Non lu</span>{% endif %}</div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <a href="{% url 'message_edit' message.id %}" class="btn-submit">Modifier</a>
+        <a href="{% url 'message_delete' message.id %}" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce message ?')" class="btn-cancel" style="color:var(--danger);border-color:var(--danger);">Supprimer</a>
+    </div>
+</div>
+{% endif %}
+
+{% if show_edit_modal and form %}
+<div class="modal-box" style="max-width:600px;">
+    <div class="modal-header">
+        <h2>Modifier le message</h2>
+        <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <form method="post" action="{% url 'message_edit' message.id %}">
+        {% csrf_token %}
+        <div class="modal-body">
+            <div class="form-group">
+                <label>Nom</label>
+                {{ form.nom }}
+                {% if form.nom.errors %}<div class="form-errors"><ul>{% for error in form.nom.errors %}<li>{{ error }}</li>{% endfor %}</ul></div>{% endif %}
+            </div>
+            <div class="form-group">
+                <label>Niveau</label>
+                {{ form.niveau }}
+                {% if form.niveau.errors %}<div class="form-errors"><ul>{% for error in form.niveau.errors %}<li>{{ error }}</li>{% endfor %}</ul></div>{% endif %}
+            </div>
+            <div class="form-group">
+                <label>Format</label>
+                {{ form.format_cours }}
+                {% if form.format_cours.errors %}<div class="form-errors"><ul>{% for error in form.format_cours.errors %}<li>{{ error }}</li>{% endfor %}</ul></div>{% endif %}
+            </div>
+            <div class="form-group">
+                <label>Détails</label>
+                {{ form.details }}
+                {% if form.details.errors %}<div class="form-errors"><ul>{% for error in form.details.errors %}<li>{{ error }}</li>{% endfor %}</ul></div>{% endif %}
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn-cancel" onclick="closeModal()">Annuler</button>
+            <button type="submit" class="btn-submit">Enregistrer</button>
+        </div>
+    </form>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block extra_js %}
+{% if show_detail_modal or show_edit_modal %}
+<script>
+window.addEventListener('DOMContentLoaded', () => openModal());
+</script>
+{% endif %}
+{% endblock %}

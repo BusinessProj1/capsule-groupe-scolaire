@@ -1,0 +1,76 @@
+{% extends "accounts/dashboard_base.html" %}
+{% block title %}Professeurs{% endblock %}
+{% block content %}
+<div class="page-header">
+    <div><h1>Professeurs</h1><p>Gestion du corps enseignant</p></div>
+    <button class="btn-add" onclick="openModal()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Ajouter un professeur
+    </button>
+</div>
+<div class="stats-row">
+    <div class="stat-card">
+        <div><div class="stat-label">Total professeurs</div><div class="stat-value">{{ total }}</div></div>
+        <div class="stat-icon gold"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+    </div>
+    <div class="stat-card">
+        <div><div class="stat-label">Primaire</div><div class="stat-value">{{ primaire }}</div></div>
+        <div class="stat-icon blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></div>
+    </div>
+    <div class="stat-card">
+        <div><div class="stat-label">Collège</div><div class="stat-value">{{ college }}</div></div>
+        <div class="stat-icon green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></div>
+    </div>
+    <div class="stat-card">
+        <div><div class="stat-label">Lycée</div><div class="stat-value">{{ lycee }}</div></div>
+        <div class="stat-icon orange"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></div>
+    </div>
+</div>
+<div class="card">
+    {% if professeurs %}
+    <table class="data-table">
+        <thead><tr><th></th><th>Nom complet</th><th>Matière</th><th>Téléphone</th><th>Email</th><th>Statut</th><th>Actions</th></tr></thead>
+        <tbody>{% for p in professeurs %}<tr>
+            <td><div class="avatar-sm" style="background:var(--info-bg);color:var(--info);">{{ p.initiales }}</div></td>
+            <td style="font-weight:700;">{{ p.prenom }} {{ p.nom }}</td>
+            <td><span class="badge badge-gold">{{ p.get_matiere_display }}</span></td>
+            <td style="color:var(--text-muted);">{{ p.telephone|default:"—" }}</td>
+            <td style="color:var(--text-muted);">{{ p.email|default:"—" }}</td>
+            <td>
+                {% if p.is_active %}
+                    <span class="badge badge-success">Actif</span>
+                {% else %}
+                    <span class="badge badge-danger">Inactif</span>
+                {% endif %}
+            </td>
+            <td style="display:flex; align-items:center;">
+                <a href="{% url 'edit_professeur' p.id %}" class="btn-action" title="Modifier" style="margin-right:12px; color:var(--primary); display:flex; align-items:center;">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                </a>
+                <form method="POST" style="display:inline-flex; align-items:center; margin:0;" onsubmit="return confirm('Supprimer ce professeur ?');">
+                    {% csrf_token %}
+                    <input type="hidden" name="delete_id" value="{{ p.id }}">
+                    <button type="submit" title="Supprimer" style="background:transparent; border:none; padding:0; margin:0; cursor:pointer; color:var(--danger); display:flex; align-items:center;">
+                        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                    </button>
+                </form>
+            </td>
+        </tr>{% endfor %}</tbody>
+    </table>
+    {% else %}
+    <div class="empty-state"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><p>Aucun professeur enregistré</p><p class="sub">Ajoutez des professeurs via le bouton ci-dessus</p></div>
+    {% endif %}
+</div>
+{% endblock %}
+{% block modal_content %}
+<div class="modal-box">
+    <div class="modal-header"><h2>Ajouter un professeur</h2><button class="modal-close" onclick="closeModal()"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
+    <form method="post">{% csrf_token %}
+        <div class="modal-body">
+            {% if form.errors %}<ul class="form-errors">{% for field in form %}{% for error in field.errors %}<li>{{ field.label }}: {{ error }}</li>{% endfor %}{% endfor %}</ul>{% endif %}
+            {% for field in form %}<div class="form-group"><label>{{ field.label }}</label>{{ field }}</div>{% endfor %}
+        </div>
+        <div class="modal-footer"><button type="button" class="btn-cancel" onclick="closeModal()">Annuler</button><button type="submit" class="btn-submit">Ajouter</button></div>
+    </form>
+</div>
+{% endblock %}

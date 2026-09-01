@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Tarifs - Plateforme Éducative Premium{% endblock %}
+{% block nav_tarifs %}active{% endblock %}
+
+{% block content %}
+    <section class="section" id="tarifs">
+        <div class="container">
+            <div class="sec-head center reveal">
+                <span class="kicker">Tarifs & Formules</span>
+                <h2>Des offres <span class="gradient-text">transparentes</span></h2>
+                <p class="sec-sub">Investissez dans la réussite. Tous nos tarifs sont affichés en Dirhams Marocains (MAD).</p>
+            </div>
+            <div class="grid-3">
+                <article class="card reveal" style="text-align:center; transition-delay: 0.1s;">
+                    <h3>Séance Unique</h3>
+                    <div style="font-size:3.5rem; font-weight:800; margin: 1.5rem 0;" class="gradient-text">350<span style="font-size:1.2rem;color:var(--text-muted);font-weight:600;"> DH/h</span></div>
+                    <p>Idéal pour une aide ponctuelle ou une remise à niveau express avant un contrôle continu.</p>
+                    <a href="https://wa.me/212613214968?text=Bonjour%2C%20je%20souhaite%20r%C3%A9server%20le%20forfait%20S%C3%A9ance%20Unique." target="_blank" class="btn btn-outline" style="margin-top: 1rem; width: 100%; display: block; text-align: center;">Réserver ce forfait</a>
+                </article>
+                <article class="card reveal" style="text-align:center; transform: scale(1.05); transition-delay: 0.2s; z-index: 10;">
+                    <div style="background:linear-gradient(135deg, var(--primary), var(--accent)); color:white; font-size:0.8rem; font-weight:800; padding:6px 20px; border-radius:20px; display:inline-block; margin-bottom:1.5rem; text-transform:uppercase; letter-spacing:1px; box-shadow: 0 4px 10px rgba(59,130,246,0.3);">Programme Recommandé</div>
+                    <h3>Forfait Mensuel</h3>
+                    <div style="font-size:3.5rem; font-weight:800; margin: 1rem 0;" class="gradient-text">3000<span style="font-size:1.2rem;color:var(--text-muted);font-weight:600;"> DH</span></div>
+                    <p>Pour un suivi régulier, une immersion complète et une progression constante garantie.</p>
+                    <a href="https://wa.me/212613214968?text=Bonjour%2C%20je%20souhaite%20r%C3%A9server%20le%20Forfait%20Mensuel%20%2810h%29." target="_blank" class="btn btn-primary" style="margin-top: 1rem; width: 100%; display: block; text-align: center;">Réserver ce forfait</a>
+                </article>
+                <article class="card reveal" style="text-align:center; transition-delay: 0.3s;">
+                    <h3>Packs Baccalauréat</h3>
+                    <div style="font-size:2.5rem; font-weight:800; margin: 2rem 0; line-height:3.5rem;" class="gradient-text">Sur devis</div>
+                    <p>Formules adaptées pour la préparation intensive des examens de 1ère et 2ème année Bac.</p>
+                    <a href="https://wa.me/212613214968?text=Bonjour%2C%20je%20souhaite%20demander%20un%20devis%20pour%20les%20Packs%20Baccalaur%C3%A9at." target="_blank" class="btn btn-outline" style="margin-top: 1rem; width: 100%; display: block; text-align: center;">Demander un devis</a>
+                </article>
+            </div>
+        </div>
+    </section>
+{% endblock %}

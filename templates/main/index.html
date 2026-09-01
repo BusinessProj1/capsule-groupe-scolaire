@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Accueil - Plateforme Éducative Premium{% endblock %}
+{% block nav_accueil %}active{% endblock %}
+
+{% block content %}
+    <header class="hero" id="accueil" style="background-image: url('{% static 'images/background.png' %}'); background-size: cover; background-position: center; background-repeat: no-repeat; position: relative;">
+        <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.4);"></div>
+        <div class="container" style="position: relative; z-index: 1;">
+            <div class="reveal center" style="max-width: 800px; margin: 0 auto; padding: 50px 30px;">
+                <span class="kicker" style="color: #fff; background: rgba(212,175,55,0.9); box-shadow: 0 4px 15px rgba(0,0,0,0.5);">Excellence Académique</span>
+                <h1 style="margin-top: 1.5rem; color: #ffffff; text-shadow: 2px 4px 10px rgba(0,0,0,0.8), 0 0 30px rgba(0,0,0,0.6);">Réussir avec une <span style="color: #F2CC59; text-shadow: 2px 4px 10px rgba(0,0,0,0.8), 0 0 30px rgba(0,0,0,0.6);">méthodologie sur-mesure</span></h1>
+                <p class="hero-lead" style="font-size: 1.25rem; font-weight: 500; color: #ffffff; text-shadow: 1px 2px 5px rgba(0,0,0,0.9);"><strong style="color: #F2CC59;">L'excellence en mathématiques.</strong> Des cours de mathématiques exclusifs et adaptés au programme marocain (Primaire, Collège, Lycée) pour vous garantir les meilleurs résultats.</p>
+                <div class="hero-ctas" style="justify-content: center; margin-top: 2rem;">
+                    <a href="{% url 'cours' %}" class="btn btn-primary" style="box-shadow: 0 5px 20px rgba(0,0,0,0.6);">Découvrir les cours</a>
+                    <a href="https://wa.me/212613214968" target="_blank" class="btn btn-outline" style="color: #fff; border-color: #fff; background: rgba(0,0,0,0.3); box-shadow: 0 5px 20px rgba(0,0,0,0.6);">Prendre contact</a>
+                </div>
+                <ul class="hero-points" style="flex-direction: row; flex-wrap: wrap; justify-content: center; margin-top: 2.5rem; color: #ffffff; font-weight: bold; text-shadow: 1px 2px 4px rgba(0,0,0,0.9);">
+                    <li style="color: #ffffff;"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/></svg> 1ère et 2ème année Baccalauréat</li>
+                    <li style="color: #ffffff;"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/></svg> Professeurs hautement qualifiés</li>
+                    <li style="color: #ffffff;"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/></svg> Suivi rigoureux et personnalisé</li>
+                </ul>
+            </div>
+        </div>
+    </header>
+
+    <section class="section">
+        <div class="container">
+            <div class="sec-head center reveal">
+                <span class="kicker">Pourquoi nous choisir ?</span>
+                <h2>Une expertise <span class="gradient-text">prouvée</span></h2>
+                <p class="sec-sub">Nous ne laissons rien au hasard pour assurer la réussite de nos élèves.</p>
+            </div>
+            <div class="grid-3" style="text-align: center;">
+                <div class="reveal" style="transition-delay: 0.1s;">
+                    <div class="counter" data-target="100" data-suffix="%" style="font-size: 4rem; font-weight: 800; color: var(--primary);">0%</div>
+                    <h3 style="font-size: 1.2rem; margin-top: 10px;">Taux de réussite au Bac</h3>
+                    <p style="color: var(--text-muted);">Nos élèves obtiennent d'excellents résultats chaque année.</p>
+                </div>
+                <div class="reveal" style="transition-delay: 0.2s;">
+                    <div class="counter" data-target="500" data-suffix="+" style="font-size: 4rem; font-weight: 800; color: var(--accent);">0+</div>
+                    <h3 style="font-size: 1.2rem; margin-top: 10px;">Exercices et examens</h3>
+                    <p style="color: var(--text-muted);">Un accès illimité à notre base de données sur le Cloud.</p>
+                </div>
+                <div class="reveal" style="transition-delay: 0.3s;">
+                    <div class="counter" data-target="24" data-suffix="/7" style="font-size: 4rem; font-weight: 800; color: var(--primary);">0/7</div>
+                    <h3 style="font-size: 1.2rem; margin-top: 10px;">Assistance continue</h3>
+                    <p style="color: var(--text-muted);">Un suivi régulier même en dehors des heures de cours.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
